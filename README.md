@@ -36,16 +36,16 @@ minicart/
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/hqphuong/minicart.git](https://github.com/hqphuong/minicart.git)
+   git clone [https://github.com/hqphuong/minicart]
    cd minicart
 
 2. **Install dependences:**
    npm install
 
-3. **Start the Expo development server:*
+3. **Start the Expo development server:**
    npx expo start
 
-4. ** View the app*
+4. **View the app**
    * Press w to open in a web browser.
 
    * Press a to open on an Android Emulator.
