@@ -1,98 +1,203 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import React, { useEffect, useState, useRef } from 'react';
+import { 
+  View, 
+  Text, 
+  FlatList, 
+  ActivityIndicator, 
+  TextInput, 
+  StyleSheet, 
+  TouchableOpacity,
+  Animated 
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router'; 
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ProductCard } from '../../components/ProductCard';
+import { getProducts } from '../../services/productService';
+import { Product } from '../../models/Products';
+import { useCartStore } from '../../store/useCartStore';
+import { Colors } from '../../constants/color';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  // Get cart items and addToCart function from Zustand Store
+  const cartItems = useCartStore((state) => state.cartItems);
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  // Sum total quantity of items in the cart for the badge count
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const numItemsInCart = cartItems.length;
+
+  // Declare an animated value for the cart icon scale
+  const cartScale = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const data = await getProducts();
+      setProducts(data);
+    } catch (error) {
+      console.log('Error:', error);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const filteredProducts = products.filter((p) => 
+    p.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Function to trigger the cart icon animation when an item is added
+  const animateCart = () => {
+    Animated.sequence([
+      // Time to scale up to 1.3 in 0.15s
+      Animated.timing(cartScale, {
+        toValue: 1.3,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      // Then scale back down to 1 in 0.15s
+      Animated.timing(cartScale, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      })
+    ]).start();
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* --- Header: Search + Cart --- */}
+      <View style={styles.header}>
+        {/* Khung Search */}
+        <View style={styles.searchBar}>
+          <Ionicons name="search" size={20} color={Colors.textMuted} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search products..."
+            placeholderTextColor={Colors.textMuted}
+            value={searchQuery}
+            onChangeText={setSearchQuery} 
+          />
+        </View>
+
+        {/* Icon + number of Items */}
+        <TouchableOpacity 
+          style={styles.cartIconContainer} 
+          activeOpacity={0.7}
+          onPress={() => router.push('/cart')} // Transition to Cart screen when cart icon is pressed
+        >
+          <Animated.View style={{ transform: [{ scale: cartScale }] }}>
+            <Ionicons name="cart-outline" size={28} color={Colors.text} />
+            
+            {/* Red point ( just exist when has Items) */}
+            {totalItems > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{numItemsInCart > 99 ? '99+' : numItemsInCart}</Text>
+              </View>
+            )}
+          </Animated.View>
+        </TouchableOpacity>
+      </View>
+
+      {/* --- List Products --- */}
+      {loading ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredProducts}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2} 
+          columnWrapperStyle={styles.row} 
+          showsVerticalScrollIndicator={false} 
+          contentContainerStyle={styles.listPadding}
+          renderItem={({ item }) => (
+            <ProductCard 
+              product={item} 
+              onAdd={() => {
+                addToCart(item); // Add product to cart in Zustand store
+                animateCart();   // Trigger the cart icon animation
+              }} 
+            />
+          )}
+        />
+      )}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background, 
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#fff', 
+  },
+  searchBar: {
+    flex: 1, 
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    backgroundColor: Colors.background,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 44,
+    marginRight: 12, 
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  searchIcon: {
+    marginRight: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: Colors.text,
+  },
+  cartIconContainer: {
+    position: 'relative',
+    padding: 4,
+  },
+  badge: {
     position: 'absolute',
+    top: -4,
+    right: -6,
+    backgroundColor: Colors.primary, 
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff', 
   },
+  badgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+    paddingHorizontal: 4,
+  },
+  row: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 8, 
+  },
+  listPadding: {
+    paddingBottom: 20, 
+  }
 });

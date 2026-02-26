@@ -1,50 +1,53 @@
-# Welcome to your Expo app 👋
+# 🛒 MiniCart - React Native E-Commerce App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A minimalist, high-performance mobile e-commerce storefront built with React Native (Expo). This project demonstrates modern mobile development practices, clean architecture, and efficient global state management.
 
-## Get started
+## ✨ Key Features
 
-1. Install dependencies
+* **Dynamic Product Catalog:** Fetches and displays real-time product data using the Fake Store RESTful API.
+* **Client-side Filtering:** Real-time search functionality allowing users to filter products instantly by name without redundant API calls.
+* **Local Shopping Cart:** Full cart logic (add, remove, adjust quantity, calculate total price) managed globally.
+* **Minimalist UI/UX:** Clean, intuitive interface with smooth animations, soft shadows, and a dedicated accent color for clear calls-to-action.
+* **Cross-Platform:** Runs seamlessly on both iOS and Android via Expo.
 
+## 🛠 Tech Stack & Tools
+
+* **Framework:** React Native / Expo Router (File-based routing)
+* **State Management:** Zustand (Lightweight, unopinionated state management)
+* **Network Requests:** Axios
+* **Language:** TypeScript (for type safety and scalable code)
+* **Icons:** @expo/vector-icons (Ionicons)
+
+## 📁 Clean Architecture (Folder Structure)
+
+The codebase is structured following the Separation of Concerns principle to ensure scalability and maintainability:
+
+```text
+minicart/
+├── app/                  # Expo Router file-based navigation (Screens & Layouts)
+├── components/           # Reusable UI building blocks (e.g., ProductCard)
+├── constants/            # Immutable values (Colors, API URLs)
+├── models/               # TypeScript interfaces defining data shapes
+├── services/             # Dedicated API fetching logic
+└── store/                # Zustand global state management
+## How to Run Locally
+
+1. **Clone the repository:**
    ```bash
+   git clone [https://github.com/hqphuong/minicart.git](https://github.com/hqphuong/minicart.git)
+   cd minicart
+
+2. **Install dependences:**
    npm install
-   ```
 
-2. Start the app
-
-   ```bash
+3. **Start the Expo development server:*
    npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
+4. ** View the app*
+   * Press w to open in a web browser.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   * Press a to open on an Android Emulator.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   * Press i to open on an iOS Simulator.
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   * Or scan the QR code with the Expo Go app on your physical device.
