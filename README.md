@@ -53,3 +53,19 @@ minicart/
    * Press i to open on an iOS Simulator.
 
    * Or scan the QR code with the Expo Go app on your physical device.
+
+## Docker Support (Production Web Build)
+
+This project includes a multi-stage `Dockerfile` optimized for production environments. It builds the web version of the Expo app and serves it using a ultra-lightweight Nginx container.
+
+**1. Build the Docker image:**
+```bash
+docker build -t minicart-web .
+```
+**2. Run the container:**
+
+```ash
+docker run -d -p 8080:80 --name my-minicart minicart-web
+```
+**3. View the app:**
+```Open your browser and navigate to http://localhost:8080.```
