@@ -1,8 +1,8 @@
-# 🛒 MiniCart - React Native E-Commerce App
+# MiniCart - React Native E-Commerce App
 
 A minimalist, high-performance mobile e-commerce storefront built with React Native (Expo). This project demonstrates modern mobile development practices, clean architecture, and efficient global state management.
 
-## ✨ Key Features
+## Key Features
 
 * **Dynamic Product Catalog:** Fetches and displays real-time product data using the Fake Store RESTful API.
 * **Client-side Filtering:** Real-time search functionality allowing users to filter products instantly by name without redundant API calls.
@@ -18,7 +18,7 @@ A minimalist, high-performance mobile e-commerce storefront built with React Nat
 * **Language:** TypeScript (for type safety and scalable code)
 * **Icons:** @expo/vector-icons (Ionicons)
 
-## 📁 Clean Architecture (Folder Structure)
+## Clean Architecture (Folder Structure)
 
 The codebase is structured following the Separation of Concerns principle to ensure scalability and maintainability:
 
@@ -30,6 +30,8 @@ minicart/
 ├── models/               # TypeScript interfaces defining data shapes
 ├── services/             # Dedicated API fetching logic
 └── store/                # Zustand global state management
+```
+
 ## How to Run Locally
 
 1. **Clone the repository:**
