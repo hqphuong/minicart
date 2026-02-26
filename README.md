@@ -10,7 +10,7 @@ A minimalist, high-performance mobile e-commerce storefront built with React Nat
 * **Minimalist UI/UX:** Clean, intuitive interface with smooth animations, soft shadows, and a dedicated accent color for clear calls-to-action.
 * **Cross-Platform:** Runs seamlessly on both iOS and Android via Expo.
 
-## 🛠 Tech Stack & Tools
+## Tech Stack & Tools
 
 * **Framework:** React Native / Expo Router (File-based routing)
 * **State Management:** Zustand (Lightweight, unopinionated state management)
